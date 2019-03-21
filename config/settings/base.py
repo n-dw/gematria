@@ -234,3 +234,10 @@ SOCIALACCOUNT_ADAPTER = "gematria.users.adapters.SocialAccountAdapter"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+from django.contrib import admin
+
+#change admin variables
+admin.site.site_header = 'Gematria admin'
+admin.site.site_title = 'Gematria admin'
+admin.site.index_title = 'Gematria administration'
+admin.empty_value_display = 'Empty'
