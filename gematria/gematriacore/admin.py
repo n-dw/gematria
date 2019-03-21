@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.utils.html import format_html
+
 from gematria.gematriacore.models import(
     LetterPower,
     LetterMeaning,
@@ -36,8 +38,13 @@ class WordMeaningAdmin(admin.ModelAdmin):
 class LetterAdmin(admin.ModelAdmin):
     filter_horizontal = ('powers', 'meanings')
     search_fields = ['title', 'character']
-    list_display = ['title', 'character', 'alphabet']
+    list_display = ['title', 'char_span', 'alphabet']
     list_filter = ['alphabet']
+
+    def char_span(self, instance):
+        return format_html("""<span class="u-lang-hebrew">{0}</a>""", instance.character)
+
+    char_span.short_description = 'Character'
 
 @admin.register(LetterMeaning)
 class LetterMeaningAdmin(admin.ModelAdmin):
