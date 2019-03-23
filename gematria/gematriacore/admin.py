@@ -26,38 +26,41 @@ class AlphabetAdmin(admin.ModelAdmin):
 class DictionaryAdmin(admin.ModelAdmin):
     pass
 
+admin.site.register(WordMeaning)
+class WordMeaningAdminInline(admin.TabularInline):
+    model = WordMeaning
+
 @admin.register(Word)
 class WordAdmin(admin.ModelAdmin):
+    search_fields = ['name_english', 'name_original_language']
+    inlines = (WordMeaningAdminInline,)
+    filter_horizontal = ('letters',)
+
+@admin.register(LetterMeaning)
+class LetterMeaningAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(WordMeaning)
-class WordMeaningAdmin(admin.ModelAdmin):
-    pass
+admin.site.register(LetterPower)
+class LetterPowerAdminInline(admin.TabularInline):
+    model = LetterPower
 
 @admin.register(Letter)
 class LetterAdmin(admin.ModelAdmin):
-    filter_horizontal = ('powers', 'meanings')
+    filter_horizontal = ('meanings',)
     search_fields = ['title', 'character']
-    list_display = ['title', 'char_span', 'alphabet']
+    list_display = ['title', 'char_span', 'letter_order','alphabet']
     list_filter = ['alphabet']
+    inlines = (LetterPowerAdminInline,)
 
     def char_span(self, instance):
         return format_html("""<span class="u-lang-hebrew">{0}</a>""", instance.character)
 
     char_span.short_description = 'Character'
 
-@admin.register(LetterMeaning)
-class LetterMeaningAdmin(admin.ModelAdmin):
-    pass
-
-@admin.register(LetterPower)
-class LetterPowerAdmin(admin.ModelAdmin):
-    pass
+admin.site.register(GematriaMethodLetterRule)
+class GematriaMethodLetterRuleAdminInline(admin.TabularInline):
+    model = GematriaMethodLetterRule
 
 @admin.register(GematriaMethod)
 class GematriaMethodAdmin(admin.ModelAdmin):
-    pass
-
-@admin.register(GematriaMethodLetterRule)
-class GematriaMethodLetterRuleAdmin(admin.ModelAdmin):
-    pass
+    inlines = (GematriaMethodLetterRuleAdminInline,)
