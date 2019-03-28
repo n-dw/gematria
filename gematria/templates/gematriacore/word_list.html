@@ -1,0 +1,16 @@
+{% extends "../base.html" %}
+
+{% block content %}
+  <h2>Words</h2>
+  <section id="word_list" class="word-list">
+     {% for word_plus in words %}
+        <article class="word">
+          <p class="name name--en">{{ word_plus.word.name_english }}</p>
+           <p class="name name--en u-lang-hebrew">{{word_plus.word.name_original_language }}</p>
+        {% if word_plus.meanings %}
+        </article>
+        {% endfor %}
+  </section>
+
+{% endblock %}
+

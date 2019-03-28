@@ -1,4 +1,7 @@
 from django.db import models
+from ..managers import(
+    WordManager,
+)
 
 # Create your models here.
 
@@ -65,6 +68,8 @@ class Word(TimeStampedModel):
     name_english = models.CharField(max_length=200)
     name_original_language = models.CharField(max_length=200)
     letters = models.ManyToManyField('Letter', blank=True)
+
+    related = WordManager()
 
     def __str__(self):
         return '{0} - {1}'.format(self.name_english, self.name_original_language)
