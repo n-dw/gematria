@@ -5,6 +5,7 @@ from gematria.gematriacore.models import(
     LetterPower,
     LetterMeaning,
     Letter,
+    WordSpelling,
     WordMeaning,
     Word,
     Dictionary,
@@ -30,11 +31,21 @@ admin.site.register(WordMeaning)
 class WordMeaningAdminInline(admin.TabularInline):
     model = WordMeaning
 
+admin.site.register(WordSpelling)
+class WordSpellingAdminInline(admin.TabularInline):
+    model = WordSpelling
+
+
 @admin.register(Word)
 class WordAdmin(admin.ModelAdmin):
     search_fields = ['name_english', 'name_original_language']
     inlines = (WordMeaningAdminInline,)
-    filter_horizontal = ('letters',)
+    readonly_fields = ('word_spelling',)
+
+    def word_spelling(self, obj):
+        return obj.spelling.all()
+
+    word_spelling.short_description = "Spelling"
 
 @admin.register(LetterMeaning)
 class LetterMeaningAdmin(admin.ModelAdmin):

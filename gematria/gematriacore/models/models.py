@@ -48,13 +48,18 @@ class Letter(TimeStampedModel):
     character = models.CharField(max_length=1)
     meanings = models.ManyToManyField('LetterMeaning', blank=True)
     alphabet = models.ForeignKey('Alphabet', on_delete=models.SET_NULL, null=True, blank=True)
-    letter_order = models.IntegerField(null=True, blank=True, max_length=4)
+    letter_order = models.IntegerField(null=True, blank=True)
 
     class Meta:
         ordering = ['letter_order', 'title', 'alphabet']
 
     def __str__(self):
         return '{0}: {1} {2}'.format(self.title, self.character, self.alphabet)
+
+class WordValue(TimeStampedModel):
+    value = models.FloatField()
+    word = models.ForeignKey('Word', blank=True, null=True, on_delete=models.CASCADE)
+    gematria_method = models.ForeignKey('GematriaMethod', blank=True, null=True, on_delete=models.CASCADE)
 
 class WordMeaning(TimeStampedModel):
     """
@@ -64,12 +69,41 @@ class WordMeaning(TimeStampedModel):
     word = models.ForeignKey('Word', blank=True, null=True, on_delete=models.CASCADE)
     is_active = models.NullBooleanField(null=True, blank=True, default=False)
 
+
+class WordSpelling(TimeStampedModel):
+    """
+          The Letter and the Position in the word of that letter
+           """
+    letter = models.ForeignKey('letter', on_delete=models.CASCADE, null=True, blank=True)
+    position = models.PositiveSmallIntegerField()
+    word = models.ForeignKey('Word', related_name='spelling', blank=True, null=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{0}, pos: {1}, {2}'.format(self.letter, self.position, self.word)
+
 class Word(TimeStampedModel):
     name_english = models.CharField(max_length=200)
     name_original_language = models.CharField(max_length=200)
-    letters = models.ManyToManyField('Letter', blank=True)
 
-    related = WordManager()
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # Call the "real" save() method.
+
+        #create the spelling of each word it's important to break the letters up
+        word_len = len(self.name_original_language)
+        for idx in range(word_len):
+            letter = Letter.objects.get(character=self.name_original_language[idx])
+
+            if letter:
+                position = word_len - idx
+                obj, created = WordSpelling.objects.update_or_create(
+                    letter=letter, position=position, word=self
+                )
+
+
+        #if we have gematria methods calculate the values
+        num_gem_methods = GematriaMethod.objects.count()
+        if num_gem_methods:
+            gem_methods = GematriaMethod.objects.all()
 
     def __str__(self):
         return '{0} - {1}'.format(self.name_english, self.name_original_language)

@@ -11,3 +11,9 @@
   background-color: #f2dede;
   border-color: #eed3d7;
 }
+
+.u-lang-hebrew {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 1.5rem;
+  direction: rtl;
+}
