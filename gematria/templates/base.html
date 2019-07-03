@@ -16,12 +16,14 @@
       <!-- Your stuff: Third-party CSS libraries go here -->
       <link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre" rel="stylesheet">
       <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.css" rel="stylesheet">
+      <script defer src="{% static 'js/vue.js' %}"></script>
       <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
       <!-- This file stores project-specific CSS -->
         <link href="{% static 'css/project.css' %}" rel="stylesheet">
     {% endblock css %}
   </head>
   <body>
+  <div id="app">
   {% include "includes/components/navbar.html" %}
   <main id="main">
 
@@ -37,7 +39,7 @@
   </main>
 
     {% block modal %}{% endblock modal %}
-
+</div>
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -51,6 +53,7 @@
       
 
     {% endblock javascript %}
+
   </body>
 </html>
  

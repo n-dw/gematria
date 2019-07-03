@@ -68,3 +68,5 @@ INSTALLED_APPS += ["django_extensions"]  # noqa F405
 # ------------------------------------------------------------------------------
 ALLOWED_HOSTS += ['172.16.238.1']
 INTERNAL_IPS += ['172.16.238.1']
+
+FRONTEND_DIR = str(APPS_DIR.path("frontend"))

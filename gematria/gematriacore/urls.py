@@ -12,6 +12,7 @@ urlpatterns = [
         view=views.WordListView.as_view(),
         name='words'
     ),
+
     url(
         regex=r'^dictionary/(?P<pk>\d+)$',
         view=views.DictionaryDetailView.as_view(),

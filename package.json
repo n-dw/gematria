@@ -1,27 +1,51 @@
 {
   "name": "gematria",
   "version": "0.1.0",
-  "dependencies": {},
-  "devDependencies": {
-    "autoprefixer": "^9.4.7",
-    "browser-sync": "^2.14.0",
-    "cssnano": "^4.1.10",
-    "gulp": "^4.0.0",
-    "gulp-imagemin": "^5.0.3",
-    "gulp-plumber": "^1.2.1",
-    "gulp-postcss": "^8.0.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-sass": "^4.0.2",
-    "gulp-uglify-es": "^1.0.4",
-    "pixrem": "^5.0.0"
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
-  "engines": {
-    "node": ">=8"
+  "dependencies": {
+    "core-js": "^2.6.5",
+    "vue": "^2.6.10",
+    "vue-touch-keyboard": "^0.3.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.9.0",
+    "@vue/cli-plugin-eslint": "^3.9.0",
+    "@vue/cli-service": "^3.9.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
   },
   "browserslist": [
+    "> 1%",
     "last 2 versions"
   ],
-  "scripts": {
-    "dev": "gulp"
-  }
+  "main": "src/main.js",
+  "repository": "https://github.com/n-dw/gematria.git",
+  "author": "N-dW",
+  "license": "MIT"
 }
