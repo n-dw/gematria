@@ -114,6 +114,9 @@ class Dictionary(TimeStampedModel):
     words = models.ManyToManyField('Word', blank=True)
     is_base_dict = models.NullBooleanField(default=False)
 
+    def __str__(self):
+        return '{0} - {1}'.format(self.title, self.language)
+
 class Alphabet(TimeStampedModel):
     title = models.CharField(max_length=200)
     language = models.ForeignKey('Language', on_delete=models.SET_NULL, null=True, blank=True)
