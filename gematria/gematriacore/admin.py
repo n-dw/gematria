@@ -8,6 +8,7 @@ from gematria.gematriacore.models import(
     WordSpelling,
     WordMeaning,
     Word,
+    WordValue,
     Dictionary,
     Alphabet,
     Language,
@@ -47,6 +48,11 @@ class WordAdmin(admin.ModelAdmin):
 
     word_spelling.short_description = "Spelling"
 
+
+@admin.register(WordValue)
+class WordValueAdmin(admin.ModelAdmin):
+    pass
+
 @admin.register(LetterMeaning)
 class LetterMeaningAdmin(admin.ModelAdmin):
     pass
@@ -61,7 +67,7 @@ class LetterAdmin(admin.ModelAdmin):
     search_fields = ['title', 'character']
     list_display = ['title', 'char_span', 'letter_order','alphabet']
     list_filter = ['alphabet']
-    inlines = (LetterPowerAdminInline,)
+
 
     def char_span(self, instance):
         return format_html("""<span class="u-lang-hebrew">{0}</a>""", instance.character)
