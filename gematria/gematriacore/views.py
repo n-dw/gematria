@@ -18,6 +18,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.decorators import action
 from rest_framework import renderers
+from rest_framework import filters
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -41,6 +42,17 @@ class WordNumericalValue(generics.GenericAPIView):
 
         return Response(num_values)
 
+
+class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    queryset = Language.objects.all()
+    serializer_class = LanguageSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'uuid']
+
+
 class WordViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
@@ -50,6 +62,8 @@ class WordViewSet(viewsets.ModelViewSet):
     """
     queryset = Word.objects.all()
     serializer_class = WordSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name_english', 'name_original_language']
     #permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
@@ -59,6 +73,18 @@ class WordViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+class WordValueViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+
+    Additionally we also provide an extra `highlight` action.
+    """
+    queryset = WordValue.objects.all()
+    serializer_class = WordValueSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['value', 'word']
 
 # class WordList(generics.ListCreateAPIView):
 #     """
@@ -95,6 +121,8 @@ class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Language.objects.all()
     serializer_class = LanguageSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'uuid']
 
 # class UserList(generics.ListAPIView):
 #     queryset = User.objects.all()

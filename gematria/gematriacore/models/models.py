@@ -56,7 +56,7 @@ class Language(TimeStampedModel):
 class Letter(TimeStampedModel):
     title = models.CharField(max_length=200)
     character = models.CharField(max_length=1)
-    meanings = models.ManyToManyField('LetterMeaning', blank=True, null=True)
+    meanings = models.ManyToManyField('LetterMeaning', blank=True)
     alphabet = models.ForeignKey('Alphabet', on_delete=models.SET_NULL, null=True, blank=True)
     letter_order = models.IntegerField(null=True, blank=True,
                                        help_text='The order from position 1 that this character appears in the alphabet.')
@@ -110,22 +110,13 @@ class Word(TimeStampedModel):
     name_english = models.CharField(max_length=200)
     name_original_language = models.CharField(max_length=200)
     language = models.ForeignKey('Language', on_delete=models.SET_NULL, null=True, blank=True)
+    characters_alpha = models.CharField(max_length=200, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  # Call the "real" save() method.
 
-        #create the spelling of each word it's important to break the letters up
-        #MAYBENOTIMPORTANT
-        # word_len = len(self.name_original_language)
-        # for idx in range(word_len):
-        #     letter = Letter.objects.get(character=self.name_original_language[idx])
-        #
-        #     if letter:
-        #         position = word_len - idx
-        #         obj, created = WordSpelling.objects.update_or_create(
-        #             letter=letter, position=position, word=self
-        #         )
+        self.characters_alpha = ''.join(sorted(self.name_original_language))
 
+        super(Word, self).save(*args, **kwargs)  # Call the "real" save() method.
 
         #if we have gematria methods calculate the values
         num_gem_methods = GematriaMethod.objects.filter(language=self.language).count()
@@ -159,6 +150,7 @@ class WordMeaning(TimeStampedModel):
        """
     meaning = models.CharField(max_length=200)
     word = models.ForeignKey('Word', blank=True, null=True, on_delete=models.CASCADE)
+    source = models.TextField(blank=True, null=True, help_text='citation')
     is_active = models.NullBooleanField(null=True, blank=True, default=False)
 
     def __str__(self):

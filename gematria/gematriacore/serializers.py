@@ -21,12 +21,23 @@ class WordSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Word
-        fields = ['name_english', 'name_original_language', 'language']
+        fields = ['id', 'name_english', 'name_original_language', 'language']
 
 class WordValueSerializer(serializers.ModelSerializer):
+
+    word = WordSerializer()
+
     class Meta:
         model = WordValue
         fields = ['word', 'value', 'gematria_method']
+
+class WordMeaningSerializer(serializers.ModelSerializer):
+
+    word = WordSerializer()
+
+    class Meta:
+        model = WordValue
+        fields = ['word', 'meaning', 'gematria_method']
 
 
 class LanguageSerializer(serializers.ModelSerializer):

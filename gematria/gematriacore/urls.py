@@ -22,6 +22,7 @@ app_name = "gematriacore"
 
 router = routers.DefaultRouter()
 router.register(r'words', views.WordViewSet)
+router.register(r'word-values', views.WordValueViewSet)
 router.register(r'users', views.UserViewSet)
 router.register(r'languages', views.LanguageViewSet)
 
