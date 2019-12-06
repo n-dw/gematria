@@ -9,19 +9,36 @@ from . import views
 app_name = "gematriacore"
 
 
+# router = routers.DefaultRouter()
+# router.register(r'groups', views.GroupViewSet)
+# router.register(r'wj', views.GroupViewSet)
+
+
+# urlpatterns = [
+#     path('', include(router.urls)),
+#     path('home', views.HomeView.as_view(), name="home"),
+#     url(r'^api-auth/', include('rest_framework.urls')),
+# ]
+
 router = routers.DefaultRouter()
-router.register(r'groups', views.GroupViewSet)
-router.register(r'wj', views.GroupViewSet)
+router.register(r'words', views.WordViewSet)
+router.register(r'users', views.UserViewSet)
+router.register(r'languages', views.LanguageViewSet)
 
 
 urlpatterns = [
     path('', include(router.urls)),
     path('home', views.HomeView.as_view(), name="home"),
-    url(r'^api-auth/', include('rest_framework.urls')),
+    path('words/<int:pk>/num-value', views.WordNumericalValue.as_view(), name='word-value'),
 ]
 
-format_patterns = [
-    path('words/', views.WordList.as_view()),
-    path('words/<int:pk>/', views.WordDetail.as_view()),
-]
-urlpatterns = urlpatterns + format_suffix_patterns(format_patterns)
+# format_patterns = [
+#     path('words/', views.WordList.as_view()),
+#     path('words/<int:pk>/', views.WordDetail.as_view()),
+#     path('words/<int:pk>/num-value', views.WordNumericalValue.as_view(), name='word-value'),
+#     path('users/', views.UserList.as_view()),
+#     path('users/<int:pk>/', views.UserDetail.as_view()),
+# ]
+
+
+#urlpatterns = urlpatterns + format_suffix_patterns(format_patterns)

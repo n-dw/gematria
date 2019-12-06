@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
             field=models.IntegerField(blank=True, help_text='The order from position 1 that this character appears in the alphabet.', null=True),
         ),
         migrations.AlterField(
-            model_name='letter',
+            model_name='language',
             name='meanings',
             field=models.ManyToManyField(blank=True, null=True, to='gematriacore.LetterMeaning'),
         ),

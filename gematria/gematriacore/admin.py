@@ -9,7 +9,6 @@ from gematria.gematriacore.models import(
     WordMeaning,
     Word,
     WordValue,
-    Dictionary,
     Alphabet,
     Language,
     GematriaMethodLetterRule,
@@ -22,10 +21,6 @@ class LanguageAdmin(admin.ModelAdmin):
 
 @admin.register(Alphabet)
 class AlphabetAdmin(admin.ModelAdmin):
-    pass
-
-@admin.register(Dictionary)
-class DictionaryAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(WordMeaning)

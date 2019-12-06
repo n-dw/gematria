@@ -1,8 +1,10 @@
 from django.db import models
+import uuid
 from django.contrib.postgres.fields import ArrayField
 from ..managers import(
     WordManager,
 )
+from gematria.users.models import User
 
 # Create your models here.
 
@@ -25,16 +27,6 @@ class Alphabet(TimeStampedModel):
     def __str__(self):
         return '{0} - Lang: {1}'.format(self.title, self.language)
 
-class Dictionary(TimeStampedModel):
-    title = models.CharField(max_length=200)
-    language = models.ForeignKey('Language', on_delete=models.SET_NULL, null=True, blank=True)
-    words = models.ManyToManyField('Word', blank=True)
-    is_base_dict = models.NullBooleanField(default=False)
-
-    def __str__(self):
-        return '{0} - {1}'.format(self.title, self.language)
-
-
 
 class GematriaMethod(TimeStampedModel):
     title = models.CharField(max_length=200)
@@ -54,6 +46,7 @@ class GematriaMethodLetterRule(TimeStampedModel):
         return '{0} - Method: {1}'.format(self.letter, self.gematria_method)
 
 class Language(TimeStampedModel):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=200)
 
     def __str__(self):
@@ -113,6 +106,7 @@ class WordValue(TimeStampedModel):
         return '{0} - {1} : {2}'.format(self.word, self.value, self.gematria_method)
 
 class Word(TimeStampedModel):
+    #creator = models.ForeignKey('User', related_name='words', on_delete=models.CASCADE)
     name_english = models.CharField(max_length=200)
     name_original_language = models.CharField(max_length=200)
     language = models.ForeignKey('Language', on_delete=models.SET_NULL, null=True, blank=True)
