@@ -114,7 +114,9 @@ class Word(TimeStampedModel):
 
     def save(self, *args, **kwargs):
 
-        self.characters_alpha = ''.join(sorted(self.name_original_language))
+        no_spaces_original_name = "".join(self.name_original_language.split())
+
+        self.characters_alpha = ''.join(sorted(no_spaces_original_name))
 
         super(Word, self).save(*args, **kwargs)  # Call the "real" save() method.
 
@@ -128,7 +130,7 @@ class Word(TimeStampedModel):
 
                 gematria_value = 0
 
-                for character in self.name_original_language:
+                for character in no_spaces_original_name:
                     # get the letter object
                     letter = Letter.objects.get(character=character)
                     # get the gematria letter rule so we can find the numerical value for the letter
