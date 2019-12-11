@@ -2,6 +2,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView, TemplateView, UpdateView, ListView
 from django.urls import reverse
+from django.db.models import Q
+
 from .models import *
 from gematria.users.models import User
 
@@ -13,6 +15,7 @@ from .serializers import *
 
 from rest_framework import viewsets
 from rest_framework import generics
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -27,6 +30,64 @@ def api_root(request, format=None):
         'words': reverse('word-list', request=request, format=format)
     })
 
+class SuggestionsView(APIView):
+    # {
+    #     id:
+    #     object_type:
+    #     value:
+    #     input_value:
+    # }
+    def get(self, request, format=None):
+        query_string = request.query_params['search']
+
+        if query_string.isnumeric():
+            word_values = WordValue.objects.filter(value__contains=query_string).order_by('value').distinct('value').all()
+            wordValueSerializer = WordValueSerializer(word_values, many=True)
+
+            suggestions = []
+            for word_val in word_values:
+                suggestion = {
+                    'id': word_val.id,
+                    'type': 'number' ,
+                    'value': word_val.value,
+                    'search_value': word_val.value ,
+                }
+
+                suggestions.append(suggestion)
+
+            return Response(suggestions)
+
+        words_english = Word.objects.filter(name_english__icontains=query_string).all()
+        words_original = Word.objects.filter(name_original_language__icontains=query_string).all()
+
+        words = []
+
+        search_value = 'name_english'
+
+        if words_english.count() > 0:
+            words = words_english
+            search_value = 'name_english'
+
+        if words_original.count() > 0:
+            words = words_original
+            search_value = 'name_original_language'
+
+        eng_count = words_english.count()
+
+        wordSerializer = WordSerializer(words, many=True)
+
+        suggestions = []
+        for word in words:
+            suggestion = {
+                'id': word.id,
+                'type': 'word',
+                'value': word.name_english + ' : ' + word.name_original_language,
+                'search_value': getattr(word, search_value),
+            }
+
+            suggestions.append(suggestion)
+
+        return Response(suggestions)
 
 class WordNumericalValue(generics.GenericAPIView):
     queryset = Word.objects.all()
@@ -60,16 +121,12 @@ class WordViewSet(viewsets.ModelViewSet):
 
     Additionally we also provide an extra `highlight` action.
     """
-    queryset = Word.objects.all()
+
+    queryset = Word.objects.order_by('language', 'wordvalue__value').all()
     serializer_class = WordSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['name_english', 'name_original_language']
-    #permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-
-    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
-    def highlight(self, request, *args, **kwargs):
-        word = self.get_object()
-        return Response(word)
+    #permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)

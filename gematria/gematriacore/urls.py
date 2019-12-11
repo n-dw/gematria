@@ -26,12 +26,14 @@ router.register(r'word-values', views.WordValueViewSet)
 router.register(r'users', views.UserViewSet)
 router.register(r'languages', views.LanguageViewSet)
 
-
 urlpatterns = [
     path('', include(router.urls)),
     path('home', views.HomeView.as_view(), name="home"),
     path('words/<int:pk>/num-value', views.WordNumericalValue.as_view(), name='word-value'),
+    path('suggestions', views.SuggestionsView.as_view(), name='suggestions'),
 ]
+
+urlpatterns += router.urls
 
 # format_patterns = [
 #     path('words/', views.WordList.as_view()),

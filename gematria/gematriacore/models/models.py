@@ -3,6 +3,7 @@ import uuid
 from django.contrib.postgres.fields import ArrayField
 from ..managers import(
     WordManager,
+    WordValueSuggestionManager,
 )
 from gematria.users.models import User
 
@@ -101,6 +102,9 @@ class WordValue(TimeStampedModel):
     value = models.FloatField(blank=True, null=True,)
     word = models.ForeignKey('Word', blank=True, null=True, on_delete=models.CASCADE)
     gematria_method = models.ForeignKey('GematriaMethod', blank=True, null=True, on_delete=models.CASCADE)
+
+    objects = models.Manager()
+    suggestion_objects = WordValueSuggestionManager()
 
     def __str__(self):
         return '{0} - {1} : {2}'.format(self.word, self.value, self.gematria_method)
