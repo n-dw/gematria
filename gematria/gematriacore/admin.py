@@ -5,10 +5,9 @@ from gematria.gematriacore.models import(
     LetterPower,
     LetterMeaning,
     Letter,
-    WordSpelling,
     WordMeaning,
     Word,
-    Dictionary,
+    WordValue,
     Alphabet,
     Language,
     GematriaMethodLetterRule,
@@ -23,29 +22,18 @@ class LanguageAdmin(admin.ModelAdmin):
 class AlphabetAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(Dictionary)
-class DictionaryAdmin(admin.ModelAdmin):
-    pass
-
 admin.site.register(WordMeaning)
 class WordMeaningAdminInline(admin.TabularInline):
     model = WordMeaning
-
-admin.site.register(WordSpelling)
-class WordSpellingAdminInline(admin.TabularInline):
-    model = WordSpelling
-
 
 @admin.register(Word)
 class WordAdmin(admin.ModelAdmin):
     search_fields = ['name_english', 'name_original_language']
     inlines = (WordMeaningAdminInline,)
-    readonly_fields = ('word_spelling',)
 
-    def word_spelling(self, obj):
-        return obj.spelling.all()
-
-    word_spelling.short_description = "Spelling"
+@admin.register(WordValue)
+class WordValueAdmin(admin.ModelAdmin):
+    pass
 
 @admin.register(LetterMeaning)
 class LetterMeaningAdmin(admin.ModelAdmin):
@@ -61,7 +49,7 @@ class LetterAdmin(admin.ModelAdmin):
     search_fields = ['title', 'character']
     list_display = ['title', 'char_span', 'letter_order','alphabet']
     list_filter = ['alphabet']
-    inlines = (LetterPowerAdminInline,)
+
 
     def char_span(self, instance):
         return format_html("""<span class="u-lang-hebrew">{0}</a>""", instance.character)
