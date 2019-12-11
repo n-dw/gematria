@@ -16,8 +16,9 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'name']
 
 class WordSerializer(serializers.ModelSerializer):
-    
-    #value = serializers.HyperlinkedIdentityField(view_name='word-value', format='html')
+
+    def create(self, validated_data):
+        return Word.objects.create(**validated_data)
     
     class Meta:
         model = Word

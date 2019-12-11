@@ -160,15 +160,3 @@ class WordMeaning(TimeStampedModel):
 
 
 
-class WordSpelling(TimeStampedModel):
-    """
-          The Letter and the Position in the word of that letter
-           """
-    letter = models.ForeignKey('letter', on_delete=models.CASCADE, null=True, blank=True)
-    position = models.PositiveSmallIntegerField()
-    word = models.ForeignKey('Word', related_name='spelling', blank=True, null=True, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return '{0}, pos: {1}, {2}'.format(self.letter, self.position, self.word)
-
-
