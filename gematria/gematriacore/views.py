@@ -104,6 +104,16 @@ class WordNumericalValue(generics.GenericAPIView):
         return Response(num_values)
 
 
+class AlphabetViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    queryset = Alphabet.objects.all()
+    serializer_class = AlphabetSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'language', 'id']
+
+
 class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
     """
     This viewset automatically provides `list` and `detail` actions.
@@ -116,6 +126,7 @@ class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
 
 class WordViewSet(viewsets.ModelViewSet):
     """
+
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
 
@@ -143,27 +154,29 @@ class WordValueViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['value', 'word']
 
-# class WordList(generics.ListCreateAPIView):
-#     """
-#     List all snippets, or create a new snippet.
-#     """
-#
-#     queryset = Word.objects.all()
-#     serializer_class = WordSerializer
-#
-# class WordDetail(generics.RetrieveUpdateDestroyAPIView):
-#
-#     queryset = Word.objects.all()
-#     serializer_class = WordSerializer
-
-class GroupViewSet(viewsets.ModelViewSet):
+class WordMeaningViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows groups to be viewed or edited.
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+
+    Additionally we also provide an extra `highlight` action.
     """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+    queryset = WordMeaning.objects.all()
+    serializer_class = WordMeaningSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['meaning', 'word']
 
+class GematriaMethodViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
 
+    Additionally we also provide an extra `highlight` action.
+    """
+    queryset = GematriaMethod.objects.all()
+    serializer_class = GematriaMethodSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'language', 'alphabet']
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -180,20 +193,6 @@ class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = LanguageSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'uuid']
-
-# class UserList(generics.ListAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-#
-#
-# class UserDetail(generics.RetrieveAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-
-
-
-class HomeView(TemplateView):
-    template_name = "pages/home.html"
 
 #WORDS
 class WordListView(ListView):

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Group
 from gematria.users.models import User
-from .models import Word, WordValue, Language
+from .models import Alphabet, Word, WordValue, WordMeaning, Letter, LetterMeaning, Language, GematriaMethod, GematriaMethodLetterRule
 
 from rest_framework import serializers
 
@@ -15,18 +15,46 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = Group
         fields = ['url', 'name']
 
-class WordSerializer(serializers.ModelSerializer):
 
-    def create(self, validated_data):
-        return Word.objects.create(**validated_data)
+
+class LanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Language
+        fields = ['uuid', 'title']
+
+class LetterSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Word
-        fields = ['id', 'name_english', 'name_original_language', 'language']
+        model = Letter
+        fields = ['id', 'character', 'title', 'letter_order']
+
+
+class GematriaMethodLetterRuleSerializer(serializers.ModelSerializer):
+    letter = LetterSerializer(read_only=True)
+
+    class Meta:
+        model = GematriaMethodLetterRule
+        fields = ['id', 'numerical_value', 'letter', 'gematria_method']
+
+class AlphabetSerializer(serializers.ModelSerializer):
+
+    letter_set = LetterSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Alphabet
+        fields = ['title', 'language', 'letter_set']
+
+
+class GematriaMethodSerializer(serializers.ModelSerializer):
+    gematriamethodletterrule_set = GematriaMethodLetterRuleSerializer(many=True, read_only=True)#serializers.StringRelatedField()
+
+    class Meta:
+        model = GematriaMethod
+        fields = ['id', 'title', 'language', 'gematriamethodletterrule_set']
 
 class WordValueSerializer(serializers.ModelSerializer):
 
-    word = WordSerializer()
+    #word = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = WordValue
@@ -34,16 +62,26 @@ class WordValueSerializer(serializers.ModelSerializer):
 
 class WordMeaningSerializer(serializers.ModelSerializer):
 
-    word = WordSerializer()
+    #word = serializers.StringRelatedField(many=True)
 
     class Meta:
-        model = WordValue
-        fields = ['word', 'meaning', 'gematria_method']
+        model = WordMeaning
+        fields = ['word', 'meaning']
 
 
-class LanguageSerializer(serializers.ModelSerializer):
+class WordSerializer(serializers.ModelSerializer):
+
+    wordvalue_set = WordValueSerializer(many=True, read_only=True)
+    wordmeaning_set = WordMeaningSerializer(many=True, read_only=True)
+
+    def create(self, validated_data):
+        return Word.objects.create(**validated_data)
+    
     class Meta:
-        model = Language
-        fields = ['uuid', 'title']
+        model = Word
+        fields = ['id', 'name_english', 'name_original_language', 'language', 'wordvalue_set', 'wordmeaning_set']
+
+
+
 
 

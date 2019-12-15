@@ -39,16 +39,23 @@ class GematriaMethod(TimeStampedModel):
 
 
 class GematriaMethodLetterRule(TimeStampedModel):
-    letter = models.ForeignKey('Letter', on_delete=models.SET_NULL, null=True, blank=True)
+    letter = models.ForeignKey('Letter', related_name='letter_numerical_value', on_delete=models.SET_NULL, null=True, blank=True)
     numerical_value = models.FloatField()
     gematria_method = models.ForeignKey('GematriaMethod', on_delete=models.CASCADE, null=True, blank=True)
 
+    class Meta:
+        ordering = ['letter']
+
     def __str__(self):
-        return '{0} - Method: {1}'.format(self.letter, self.gematria_method)
+        return '{0} : value = {2} - Method: {1}'.format(self.letter, self.gematria_method, self.numerical_value)
 
 class Language(TimeStampedModel):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=200)
+
+
+    class Meta:
+        ordering = ['title']
 
     def __str__(self):
         return self.title
@@ -63,7 +70,7 @@ class Letter(TimeStampedModel):
                                        help_text='The order from position 1 that this character appears in the alphabet.')
 
     class Meta:
-        ordering = ['letter_order', 'title', 'alphabet']
+        ordering = ['character', 'title', 'alphabet']
 
     def __str__(self):
         return '{0}: {1} {2}'.format(self.title, self.character, self.alphabet)
@@ -115,6 +122,9 @@ class Word(TimeStampedModel):
     name_original_language = models.CharField(max_length=200)
     language = models.ForeignKey('Language', on_delete=models.SET_NULL, null=True, blank=True)
     characters_alpha = models.CharField(max_length=200, null=True, blank=True)
+
+    class Meta:
+        ordering = ['language', 'name_original_language']
 
     def save(self, *args, **kwargs):
 
