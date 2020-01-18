@@ -30,6 +30,7 @@ class LetterSerializer(serializers.ModelSerializer):
 
 
 class GematriaMethodLetterRuleSerializer(serializers.ModelSerializer):
+
     letter = LetterSerializer(read_only=True)
 
     class Meta:
